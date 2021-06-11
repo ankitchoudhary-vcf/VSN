@@ -27,10 +27,29 @@
             </div>
             <div class="dropdown-menu" id="dropdown-menu" role="menu">
               <div class="dropdown-content">
-                <a href="#" class="dropdown-item">Dropdown item</a>
-                <a href="#" class="dropdown-item">Other dropdown item</a>
-                <hr class="dropdown-divider">
-                <a href="#" class="dropdown-item">With a divider</a>
+                <?php
+                foreach ($friend_request_data as $key => $friend) {
+                ?>
+                  <div class="panel-block">
+                    <article class="media">
+                      <figure class="media-left">
+                        <p class="image is-48x48 m-2">
+                          <img class="is-rounded" src="<?php echo $friend['user_profile']; ?>">
+                        </p>
+                      </figure>
+                      <div class="media-content">
+                        <div class="content has-text-dark">
+                          <p style="display: flex;" class="m-2">
+                            <strong><?php echo $friend['user_name']; ?></strong>
+                            <a class="button is-primary is-rounded mx-2" href="AcceptFriendRequest.php/?id=<?php echo $friend['user_id']; ?>">Accept</a>
+                          </p>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+                <?php
+                }
+                ?>
               </div>
             </div>
           </div>

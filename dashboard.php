@@ -42,6 +42,7 @@ require('database/Friends.php');
 $friend_object = new Friends;
 $friend_data = $friend_object->getALLFriend($user_id);
 $otherConnection_data = $friend_object->getOtherConnection($user_id);
+$friend_request_data = $friend_object->getFriendRequest($user_id);
 
 
 if (isset($_POST['post'])) {
@@ -84,6 +85,20 @@ if (isset($_POST['post'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>VNS</title>
     <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <style>
+        .dropdown-content {
+            position: absolute;
+            right: 100%;
+        }
+
+        @media(max-width: 1023px) {
+            .dropdown-content {
+            position: absolute;
+            right: -50%;
+        }
+        }
+
+    </style>
 </head>
 
 <body>
