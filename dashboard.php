@@ -38,6 +38,11 @@ require('database/Post.php');
 $post_object = new Post;
 $post_data = $post_object->getAll_posts();
 
+require('database/Friends.php');
+$friend_object = new Friends;
+$friend_data = $friend_object->getALLFriend($user_id);
+$otherConnection_data = $friend_object->getOtherConnection($user_id);
+
 
 if (isset($_POST['post'])) {
     $post_object->setUser_id($user_id);
@@ -101,7 +106,74 @@ if (isset($_POST['post'])) {
 
     <div class="container-fluid">
         <div class="columns is-centered notification is-mobile">
-            <div class="column m-2 is-hidden-mobile box">
+            <div class="column m-2 is-hidden-mobile">
+                <article class="panel is-success">
+                    <p class="panel-heading">
+                        Connection
+                    </p>
+                    <p class="panel-tabs">
+                        <a class="is-active" id="friend-panel">Friends</a>
+                        <a id="user-panel">Other Users</a>
+                    </p>
+                    <div id="Other_Users" style="display: none; height: 450px; overflow-y: scroll">
+                        <?php
+                        foreach ($otherConnection_data as $key => $friend) {
+                        ?>
+                            <a class="panel-block">
+                                <article class="media">
+                                    <figure class="media-left">
+                                        <p class="image is-48x48">
+                                            <img class="is-rounded" src="<?php echo $friend['user_profile']; ?>">
+                                        </p>
+                                    </figure>
+                                    <div class="media-content">
+                                        <div class="content">
+                                            <p>
+                                                <strong><?php echo $friend['user_name']; ?></strong>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <nav class="level m-2">
+                                        <div class="level-right">
+                                            <div class="level-item">
+                                                <a class="button is-primary is-rounded" href="sendFriendRequest.php/?id=<?php echo $friend['user_id']; ?>">connect</a>
+                                            </div>
+                                        </div>
+                                    </nav>
+                                </article>
+                            </a>
+
+                        <?php
+                        }
+                        ?>
+                    </div>
+                    <div id="Friends" style="height: 450px; overflow-y: scroll;">
+                        <?php
+                        foreach ($friend_data as $key => $friend) {
+                        ?>
+                            <a class="panel-block">
+                                <article class="media">
+                                    <figure class="media-left">
+                                        <p class="image is-48x48">
+                                            <img class="is-rounded" src="<?php echo $friend['user_profile']; ?>">
+                                        </p>
+                                    </figure>
+                                    <div class="media-content">
+                                        <div class="content">
+                                            <p>
+                                                <strong><?php echo $friend['user_name']; ?></strong>
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                </article>
+                            </a>
+
+                        <?php
+                        }
+                        ?>
+                    </div>
+                </article>
             </div>
             <div class="column is-half-desktop is-full-mobile m-2">
                 <div class="container">
@@ -196,6 +268,25 @@ if (isset($_POST['post'])) {
             image.style.marginTop = '15px';
         }
     }
+
+    var friend_btn = document.getElementById('friend-panel')
+    var other_user_btn = document.getElementById('user-panel')
+    var friend_panel = document.getElementById('Friends')
+    var user_panel = document.getElementById('Other_Users')
+
+    friend_btn.addEventListener('click', () => {
+        friend_panel.style.display = 'block';
+        user_panel.style.display = 'none';
+        friend_btn.classList.add('is-active');
+        other_user_btn.classList.remove('is-active');
+    })
+
+    other_user_btn.addEventListener('click', () => {
+        friend_panel.style.display = 'none';
+        user_panel.style.display = 'block';
+        friend_btn.classList.remove('is-active');
+        other_user_btn.classList.add('is-active');
+    })
 </script>
 <script>
     $(document).ready(function() {
