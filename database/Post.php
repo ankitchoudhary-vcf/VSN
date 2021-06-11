@@ -8,6 +8,8 @@ class Post
     private $post_content;
     private $post_type;
     private $media_post;
+    private $connect;
+
 
     public function __construct()
     {

@@ -6,6 +6,8 @@ class Friends
     private $request_from_id;
     private $request_to_id;
     private $status;
+    private $connect;
+
 
     public function __construct()
     {
