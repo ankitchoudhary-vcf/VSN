@@ -85,6 +85,11 @@ if (isset($_POST['post'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>VNS</title>
     <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="stylesheet" href="./css/app.min.css">
+    <!-- <link rel="stylesheet" href="./css/app-dark.min.css"> -->
+    <!-- <link rel="stylesheet" href="./css/bootstrap-dark.min.css"> -->
+    <!-- <link rel="stylesheet" href="./css/bootstrap.min.css"> -->
+    <!-- <link rel="stylesheet" href="./css/icons.min.css"> -->
     <style>
         .dropdown-content {
             position: absolute;
@@ -118,10 +123,13 @@ if (isset($_POST['post'])) {
     }
     ?>
 
+
+    <input type="hidden" name="login_user_id" id="login_user_id" value="<?php echo $user_id; ?>">
+    <input type="hidden" name="is_active_chat" id="is_active_chat" value="No" />
     <div class="container-fluid">
-        <div class="columns is-centered notification is-mobile">
-            <div class="column m-2 is-hidden-mobile">
-                <article class="panel is-success">
+        <div class="columns is-centered notification is-mobile is-multiline">
+            <div class="column is-one-third-desktop m-2">
+                <article class="panel is-success user_list">
                     <p class="panel-heading">
                         Connection
                     </p>
@@ -165,7 +173,7 @@ if (isset($_POST['post'])) {
                         <?php
                         foreach ($friend_data as $key => $friend) {
                         ?>
-                            <a class="panel-block">
+                            <a class="panel-block select_user" data-username="<?php echo $friend['user_name']; ?>" data-profile="<?php echo $friend['user_profile']; ?>" data-id="<?php echo $friend['user_id']; ?>">
                                 <article class="media">
                                     <figure class="media-left">
                                         <p class="image is-48x48">
@@ -188,8 +196,12 @@ if (isset($_POST['post'])) {
                         ?>
                     </div>
                 </article>
+
+                <div class="card" id="chat_area">
+
+                </div>
             </div>
-            <div class="column is-half-desktop is-full-mobile m-2">
+            <div class="column is-full-mobile m-2">
                 <div class="container">
                     <div class="card">
                         <form method="post" enctype="multipart/form-data">
@@ -263,39 +275,6 @@ if (isset($_POST['post'])) {
                     ?>
                 </div>
             </div>
-            <div class="column m-2 is-hidden-mobile">
-                <div class="card">
-                    <header class="card-header notification is-light p-0 mb-0">
-                        <a class="card-header-icon" style="text-decoration: none;">
-                            <i class="fas fa-arrow-alt-circle-left"></i>
-                        </a>
-                        <article class="media m-2">
-                            <figure class="media-left">
-                                <p class="image is-48x48">
-                                    <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
-                                </p>
-                            </figure>
-                            <div class="media-content" style="align-self: center; margin-top: 0%;">
-                                <div class="content">
-                                    <p>
-                                        <strong>John Smith</strong> 
-                                    </p>
-                                </div>
-                            </div>
-                        </article>
-
-                    </header>
-                    <div class="card-content" style="height: 400px; overflow-y: scroll;">
-
-                    </div>
-                    <footer class="card-footer notification is-light p-0">
-                        <form method="post" enctype="multipart/form-data" class="m-2" style="display: inline-flex;">
-                        <input type="text" class="input is-rounded is-primary" placeholder="Enter message...." style="align-self: center;">
-                        <button type="submit" class="button is-primary is-rounded m-2" name="post"><i class="fas fa-paper-plane" style="transform: rotate(45deg);"></i></button>
-                        </form>
-                    </footer>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -346,7 +325,102 @@ if (isset($_POST['post'])) {
         $('.delete').click(function() {
             $('.message').css('display', 'none');
         })
-    })
+
+
+
+        var receiver_user_id = '';
+
+        var conn_private = new WebSocket('ws://localhost:8282?token=<?php echo $token; ?>');
+
+        conn_private.onopen = function(event) {
+            console.log('Connection Established!');
+        };
+        conn_private.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+            var html_data = '';
+            if (data.from == 'Me') {
+                html_data += "<li><div class='conversation-list'><div class='chat-avatar'><img src=" + data.user_profile + " alt=''></div><div class='user-chat-content'><div class='ctext-wrap'><div class='ctext-wrap-content'><p class='mb-0'>" + data.msg + "</p><p class='chat-time mb-0'><i class='ri-time-line align-middle'></i><span class='align-middle'>" + data.msgTime + "</span></p></div></div><div class='conversation-name'>" + data.from + "</div></div></div></li>";
+            } else {
+                html_data += "<li class='right'><div class='conversation-list'><div class='chat-avatar'><img src=" + data.user_profile + " alt=''></div><div class='user-chat-content'><div class='ctext-wrap'><div class='ctext-wrap-content'><p class='mb-0'>" + data.msg + "</p><p class='chat-time mb-0'><i class='ri-time-line align-middle'></i><span class='align-middle'>" + data.msgTime + "</span></p></div></div><div class='conversation-name'>" + data.from + "</div></div></div></li>";
+            }
+            if (receiver_user_id == data.userId || data.from == 'Me') {
+                if ($('#is_active_chat').val() == 'Yes') {
+                    $('#private_chat_area').append(html_data);
+                    $('#private_chat_area').scrollTop($('#private_chat_area')[0].scrollHeight);
+                    $('#private_chat_message').val('');
+                }
+            }
+
+
+        };
+        conn_private.onclose = function(event) {
+            console.log('connection closed!');
+        };
+
+
+        function make_chat_area(receiver_user_name, receiver_user_profile) {
+            var html = `<header class="card-header notification is-success p-0 mb-0">
+                        <a class="card-header-icon back" style="text-decoration: none;">
+                            <i class="fas fa-arrow-alt-circle-left"></i>
+                        </a>
+                        <article class="media m-2">
+                            <figure class="media-left">
+                                <p class="image is-48x48">
+                                    <img class="is-rounded" src=` + receiver_user_profile + `>
+                                </p>
+                            </figure>
+                            <div class="media-content" style="align-self: center; margin-top: 0%;">
+                                <div class="content">
+                                    <p>
+                                        <strong>` + receiver_user_name + `</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+
+                    </header>
+                    <div class="card-content" id="private_chat_message" style="height: 400px; overflow-y: scroll;">
+
+                    </div>
+                    <footer class="card-footer notification is-success is-light p-0">
+                        <form method="post" id="private_chat_form enctype="multipart/form-data" class="m-2" style="display: inline-flex;">
+                            <input type="text" name="message" class="input is-rounded is-primary" placeholder="Enter message...." style="align-self: center;">
+                            <button type="submit" class="button is-primary is-rounded m-2" name="send"><i class="fas fa-paper-plane" style="transform: rotate(45deg);"></i></button>
+                        </form>
+                    </footer>`;
+
+            $('#chat_area').html(html);
+
+        }
+
+        $(document).on('click', '.select_user', function() {
+
+            receiver_user_id = $(this).data('id');
+            var from_user_id = $('#login_user_id').val();
+            var receiver_user_name = $(this).data('username');
+            var receiver_user_profile = $(this).data('profile');
+
+
+            $('.select_user.is-active').removeClass('is-active');
+            $('.user_list').css('display', 'none');
+            $('#chat_area').css('display', 'block');
+            $(this).addClass('is-active');
+
+            make_chat_area(receiver_user_name, receiver_user_profile);
+
+            $('#is_active_chat').val('Yes');
+
+        });
+
+        $(document).on('click', '.back', function() {
+
+            $('.select_user.is-active').removeClass('is-active');
+            $('#chat_area').css('display', 'none');
+            $('.user_list').css('display', 'block');
+            receiver_user_id = '';
+            void(0);
+        })
+    });
 </script>
 
 </html>
