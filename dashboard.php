@@ -93,11 +93,10 @@ if (isset($_POST['post'])) {
 
         @media(max-width: 1023px) {
             .dropdown-content {
-            position: absolute;
-            right: -50%;
+                position: absolute;
+                right: -50%;
+            }
         }
-        }
-
     </style>
 </head>
 
@@ -264,7 +263,38 @@ if (isset($_POST['post'])) {
                     ?>
                 </div>
             </div>
-            <div class="column m-2 is-hidden-mobile box">
+            <div class="column m-2 is-hidden-mobile">
+                <div class="card">
+                    <header class="card-header notification is-light p-0 mb-0">
+                        <a class="card-header-icon" style="text-decoration: none;">
+                            <i class="fas fa-arrow-alt-circle-left"></i>
+                        </a>
+                        <article class="media m-2">
+                            <figure class="media-left">
+                                <p class="image is-48x48">
+                                    <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
+                                </p>
+                            </figure>
+                            <div class="media-content" style="align-self: center; margin-top: 0%;">
+                                <div class="content">
+                                    <p>
+                                        <strong>John Smith</strong> 
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+
+                    </header>
+                    <div class="card-content" style="height: 400px; overflow-y: scroll;">
+
+                    </div>
+                    <footer class="card-footer notification is-light p-0">
+                        <form method="post" enctype="multipart/form-data" class="m-2" style="display: inline-flex;">
+                        <input type="text" class="input is-rounded is-primary" placeholder="Enter message...." style="align-self: center;">
+                        <button type="submit" class="button is-primary is-rounded m-2" name="post"><i class="fas fa-paper-plane" style="transform: rotate(45deg);"></i></button>
+                        </form>
+                    </footer>
+                </div>
             </div>
         </div>
     </div>
