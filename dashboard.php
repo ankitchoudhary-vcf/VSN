@@ -404,8 +404,8 @@ if (isset($_POST['post'])) {
                         </a>
                         <article class="media m-2">
                             <figure class="media-left">
-                                <p class="image is-48x48">
-                                    <img class="is-rounded" src=` + receiver_user_profile + `>
+                                <p>
+                                    <img class="rounded-circle avatar-xs" src=` + receiver_user_profile + `>
                                 </p>
                             </figure>
                             <div class="media-content" style="align-self: center; margin-top: 0%;">
