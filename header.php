@@ -58,10 +58,12 @@
           <a class="image mr-2" href="#" style="width: 30px; height: 40px;" title="Profile">
             <img class="is-rounded" src="<?php echo $user_data['user_profile']; ?>" alt="Profile">
           </a>
-          <a class="button is-dark is-rounded" href="logout.php" title="Logout">
+          <form method="post" action="logout.php">
+          <button class="button is-dark is-rounded" title="Logout" name="logout">
             <i class="fa fa-sign-out mr-2"></i>
             Logout
-          </a>
+          </button>
+          </form>
         </div>
       </div>
     </div>
