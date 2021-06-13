@@ -28,8 +28,12 @@
             <div class="dropdown-menu" id="dropdown-menu" role="menu">
               <div class="dropdown-content">
                 <?php
+                $ctr = 0;
                 foreach ($friend_request_data as $key => $friend) {
+                  $ctr++;
                 ?>
+                  <span class="dropdown-item has-text-success has-text-weight-bold" style="width: max-content;">Requests</span>
+                  <hr class="dropdown-divider" style="background:#00d1b2; height: 3px;">
                   <div class="panel-block">
                     <article class="media">
                       <figure class="media-left">
@@ -41,13 +45,21 @@
                         <div class="content has-text-dark">
                           <p style="display: flex;" class="m-2">
                             <strong><?php echo $friend['user_name']; ?></strong>
-                            <a class="button is-primary is-rounded mx-2" href="AcceptFriendRequest.php/?id=<?php echo $friend['user_id']; ?>">Accept</a>
+                            <a class="button is-warning p-1 m-1" href="AcceptFriendRequest.php/?id=<?php echo $friend['user_id']; ?>"><i class="fa fa-check"></i></a>
                           </p>
                         </div>
                       </div>
                     </article>
                   </div>
                 <?php
+                }
+                if ($ctr == 0) {
+                ?>
+                  <span class="dropdown-item has-text-success has-text-weight-bold" style="width: max-content;">You Have No Requests</span>
+                  <hr class="dropdown-divider" style="background:#00d1b2; height: 3px;">
+
+                <?php
+
                 }
                 ?>
               </div>
@@ -59,10 +71,10 @@
             <img class="is-rounded" src="<?php echo $user_data['user_profile']; ?>" alt="Profile">
           </a>
           <form method="post" action="logout.php">
-          <button class="button is-dark is-rounded" title="Logout" name="logout">
-            <i class="fa fa-sign-out mr-2"></i>
-            Logout
-          </button>
+            <button class="button is-dark is-rounded" title="Logout" name="logout">
+              <i class="fa fa-sign-out mr-2"></i>
+              Logout
+            </button>
           </form>
         </div>
       </div>

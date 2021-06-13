@@ -88,7 +88,7 @@ if (isset($_POST['post'])) {
     <link rel="stylesheet" href="./css/app.min.css">
     <!-- <link rel="stylesheet" href="./css/app-dark.min.css"> -->
     <!-- <link rel="stylesheet" href="./css/bootstrap-dark.min.css"> -->
-    <!-- <link rel="stylesheet" href="./css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
     <!-- <link rel="stylesheet" href="./css/icons.min.css"> -->
     <style>
         .dropdown-content {
@@ -173,30 +173,66 @@ if (isset($_POST['post'])) {
                         ?>
                     </div>
                     <div id="Friends" style="height: 450px; overflow-y: scroll;">
-                        <?php
+
+                    <ul class="list-unstyled chat-list chat-user-list">
+                            <?php
                         foreach ($friend_data as $key => $friend) {
-                        ?>
-                            <a class="panel-block select_user" data-username="<?php echo $friend['user_name']; ?>" data-profile="<?php echo $friend['user_profile']; ?>" data-id="<?php echo $friend['user_id']; ?>">
-                                <article class="media">
-                                    <figure class="media-left">
-                                        <p class="image is-48x48">
-                                            <img class="is-rounded" src="<?php echo $friend['user_profile']; ?>">
-                                        </p>
-                                    </figure>
-                                    <div class="media-content">
-                                        <div class="content">
-                                            <p>
-                                                <strong><?php echo $friend['user_name']; ?></strong>
 
-                                            </p>
-                                        </div>
-                                    </div>
-                                </article>
-                            </a>
+                            foreach ($user_private_data as $key => $user) {
+                                if ($user['user_id'] == $friend['user_id']) {
+                                    if ($user['user_login_status'] == 'Login') {
+                                        $status = "online";
+                                    } else {
+                                        $status = "away";
+                                    }
+                                    if ($user['count_status'] > 0) {
+                                        echo '
+                                                <li class="unread">
+                                                    <a href="#" class ="list-group-item list-group-action select_user" style="cursor:pointer;" data-id=' . $user['user_id'] . ' id="' . $user['user_id'] . '"  data-username=' . $user['user_name'] . ' data-profile =' . $user['user_profile'] . ' >
+                                                        <div class="media">
+                                                            <div class="chat-user-img ' . $status . ' align-self-center mr-3">
+                                                                <img src="' . $user['user_profile'] . '";
+                                                                    class="rounded-circle avatar-xs" alt="">
+                                                                <span class="user-status" style="bottom:4px;"></span>
+                                                            </div>
+                                                            <div class="media-body overflow-hidden">
+                                                                <h5 class="text-truncate font-size-15 mb-1">' . $user['user_name'] . '</h5>
+                                                                <span id="userLs_' . $user['user_id'] . '" class="chat-user-message text-truncate mb-0"></span>
+                                                            </div>
 
-                        <?php
+                                                            <div class="unread-message">
+                                                                <span id="userid_' . $user['user_id'] . '" class="badge badge-soft-danger badge-pill">' . $user['count_status'] . '</span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                                ';
+                                    } else {
+                                        echo '
+                                                <li>
+                                                    <a href="#" class ="list-group-item list-group-action select_user" style="cursor:pointer;" data-id=' . $user['user_id'] . ' id="' . $user['user_id'] . '" data-username=' . $user['user_name'] . ' data-profile =' . $user['user_profile'] . ' >
+                                                        <div class="media">
+                                                            <div class="chat-user-img ' . $status . ' align-self-center mr-3">
+                                                                <img src="' . $user['user_profile'] . '";
+                                                                    class="rounded-circle avatar-xs" alt="">
+                                                                <span class="user-status" style="bottom:4px;"></span>
+                                                            </div>
+                                                            <div class="media-body overflow-hidden">
+                                                                <h5 class="text-truncate font-size-15 mb-1">' . $user['user_name'] . '</h5>
+                                                                <span id="userLs_' . $user['user_id'] . '" class="chat-user-message text-truncate mb-0"></span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                                ';
+                                    }
+                                }
+                            }
                         }
-                        ?>
+
+                            ?>
+                        </ul>
+                        
                     </div>
                 </article>
 
