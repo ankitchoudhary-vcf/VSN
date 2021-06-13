@@ -109,6 +109,7 @@ if (isset($_POST['post'])) {
 
     <?php
     include('header.php');
+
     ?>
 
     <?php
@@ -124,8 +125,10 @@ if (isset($_POST['post'])) {
     ?>
 
 
-    <input type="hidden" name="login_user_id" id="login_user_id" value="<?php echo $user_id; ?>">
+    <input type="hidden" name="login_user_id" id="login_user_id" value="<?php echo $user_id; ?>" />
+
     <input type="hidden" name="is_active_chat" id="is_active_chat" value="No" />
+
     <div class="container-fluid">
         <div class="columns is-centered notification is-mobile is-multiline">
             <div class="column is-one-third-desktop m-2">
@@ -360,7 +363,7 @@ if (isset($_POST['post'])) {
 
         function make_chat_area(receiver_user_name, receiver_user_profile) {
             var html = `<header class="card-header notification is-success p-0 mb-0">
-                        <a class="card-header-icon back" style="text-decoration: none;">
+                        <a class="card-header-icon user-private-chat-remove" style="text-decoration: none;">
                             <i class="fas fa-arrow-alt-circle-left"></i>
                         </a>
                         <article class="media m-2">
@@ -379,21 +382,59 @@ if (isset($_POST['post'])) {
                         </article>
 
                     </header>
-                    <div class="card-content" id="private_chat_message" style="height: 400px; overflow-y: scroll;">
-
+                    <div class="card-content chat-conversation" style="height: 400px; overflow-y: scroll;">
+                    <ul class='list-unstyled mb-0' id='private_chat_area'></ul>
                     </div>
                     <footer class="card-footer notification is-success is-light p-0">
-                        <form method="post" id="private_chat_form enctype="multipart/form-data" class="m-2" style="display: inline-flex;">
-                            <input type="text" name="message" class="input is-rounded is-primary" placeholder="Enter message...." style="align-self: center;">
-                            <button type="submit" class="button is-primary is-rounded m-2" name="send"><i class="fas fa-paper-plane" style="transform: rotate(45deg);"></i></button>
+                        <form method="post" id="private_chat_form" enctype="multipart/form-data" class="m-2" style="display: inline-flex;">
+                            <input type="text" name="chat_message"  id="private_chat_message" class="input is-rounded is-primary" placeholder="Enter message...." style="align-self: center;">
+                            <button type="submit" class="button is-primary is-rounded m-2" name="sendmsg" id="sendmsg"><i class="fas fa-paper-plane" style="transform: rotate(45deg);"></i></button>
                         </form>
                     </footer>`;
 
             $('#chat_area').html(html);
+            // $('#private_chat_form').parsley();
 
         }
 
         $(document).on('click', '.select_user', function() {
+
+            conn_private = new WebSocket('ws://localhost:8282?token=<?php echo $token; ?>');
+            conn_private.onopen = function(event) {
+                console.log('Connection Established!');
+            };
+            conn_private.onmessage = function(event) {
+                var data = JSON.parse(event.data);
+                var html_data = '';
+                if (data.from == 'Me') {
+                    html_data += "<li><div class='conversation-list'><div class='chat-avatar'><img src=" + data.sender_profile + " alt=''></div><div class='user-chat-content'><div class='ctext-wrap'><div class='ctext-wrap-content'><p class='mb-0'>" + data.msg + "</p><p class='chat-time mb-0'><i class='ri-time-line align-middle'></i><span class='align-middle'>" + data.msgTime + "</span></p></div></div><div class='conversation-name'>" + data.from + "</div></div></div></li>";
+                } else {
+                    html_data += "<li class='right'><div class='conversation-list'><div class='chat-avatar'><img src=" + data.sender_profile + " alt=''></div><div class='user-chat-content'><div class='ctext-wrap'><div class='ctext-wrap-content'><p class='mb-0'>" + data.msg + "</p><p class='chat-time mb-0'><i class='ri-time-line align-middle'></i><span class='align-middle'>" + data.msgTime + "</span></p></div></div><div class='conversation-name'>" + data.from + "</div></div></div></li>";
+                }
+                if (receiver_user_id == data.userId || data.from == 'Me') {
+                    if ($('#is_active_chat').val() == 'Yes') {
+                        $('#private_chat_area').append(html_data);
+                        $('#private_chat_area').scrollTop($('#private_chat_area')[0].scrollHeight);
+                        $('#private_chat_message').val('');
+                        $('#userLs_' + receiver_user_id).html(data.msg);
+                    } else {
+                        var count_chat = $('#userid_' + data.userId).text();
+
+                        if (count_chat == '') {
+                            count_chat = 0;
+                        }
+
+                        count_chat++;
+
+                        $('#userid_' + data.userId).html('<span class="badge badge-danger badge-pill">' + count_chat + '</span>');
+                    }
+                }
+
+            };
+            conn_private.onclose = function(event) {
+                console.log('connection closed!');
+            };
+
 
             receiver_user_id = $(this).data('id');
             var from_user_id = $('#login_user_id').val();
@@ -410,9 +451,97 @@ if (isset($_POST['post'])) {
 
             $('#is_active_chat').val('Yes');
 
+            $.ajax({
+                url: 'action.php',
+                method: 'POST',
+                data: {
+                    to_user_id: receiver_user_id,
+                    from_user_id: from_user_id,
+                    action: 'fetch_chat'
+                },
+                success: function(data) {
+                    data = JSON.parse(data);
+                    if (data.length > 0) {
+                        var html_data = '';
+
+                        for (var count = 0; count < data.length; count++) {
+                            if (data[count].from_user_id == from_user_id) {
+                                html_data += `
+                                    <li>
+                                        <div class="conversation-list">
+                                            <div class="chat-avatar">
+                                                <img src=` + data[count].from_user_profile + ` alt="">
+                                            </div>
+                                            <div class="user-chat-content">
+                                                <div class="ctext-wrap">
+                                                    <div class="ctext-wrap-content">
+                                                        <p class="mb-0">` + data[count].chat_message + `</p>
+                                                        <p class="chat-time mb-0">
+                                                            <i class="ri-time-line align-middle"></i>
+                                                            <span class="align-middle">` + data[count].timestamp + `</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            <div class="conversation-name">Me</div>
+                                        </div>
+                                    </li>`;
+                            } else {
+                                html_data += `
+                                            <li class='right'>
+                                                <div class='conversation-list'>
+                                                    <div class='chat-avatar'>
+                                                        <img src=` + data[count].from_user_profile + ` alt=''>
+                                                    </div>
+                                                    <div class='user-chat-content'>
+                                                        <div class='ctext-wrap'>
+                                                            <div class='ctext-wrap-content'>
+                                                                <p class='mb-0'>` + data[count].chat_message + `</p>
+                                                                <p class='chat-time mb-0'>
+                                                                    <i class='ri-time-line align-middle'></i>
+                                                                    <span class='align-middle'>` + data[count].timestamp + `</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class='conversation-name'>` + data[count].from_user_name + `</div>
+                                                    </div>
+                                                </div>
+                                            </li>`;
+                            }
+
+                            $('#userid_' + receiver_user_id).html('');
+                            $('#userLs_' + receiver_user_id).html(data[count].chat_message);
+                            $('#private_chat_area').html(html_data);
+                            $('#private_chat_area').scrollTop($('#private_chat_area')[0].scrollHeight);
+                        }
+                    }
+
+                }
+            })
+        })
+
+        $(document).on('submit', '#private_chat_form', function(event) {
+
+            event.preventDefault();
+
+            var user_id = $('#login_user_id').val();
+                var message = $('#private_chat_message').val();
+                var data = {
+                    userId: user_id,
+                    msg: message,
+                    receiver_userId: receiver_user_id,
+                    command: 'Private'
+                };
+
+                $('#private_chat_message').val('');
+                conn_private.send(JSON.stringify(data));
+
+            // if ($('#private_chat_form').parsley().isValid()) {
+                
+
+            // }
         });
 
-        $(document).on('click', '.back', function() {
+        $(document).on('click', '.user-private-chat-remove', function() {
 
             $('.select_user.is-active').removeClass('is-active');
             $('#chat_area').css('display', 'none');

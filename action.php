@@ -4,9 +4,9 @@ session_start();
 
 if(isset($_POST['action']) && $_POST['action'] == 'leave')
 {
-    require('database/ChatUser.php');
+    require('database/User.php');
 
-    $user_object = new ChatUser;
+    $user_object = new User;
 
     $user_object->setUserId($_POST['user_id']);
     $user_object->setUserLoginStatus('Logout');
