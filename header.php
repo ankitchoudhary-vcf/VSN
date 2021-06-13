@@ -34,22 +34,19 @@
                 ?>
                   <span class="dropdown-item has-text-success has-text-weight-bold" style="width: max-content;">Requests</span>
                   <hr class="dropdown-divider" style="background:#00d1b2; height: 3px;">
-                  <div class="panel-block">
-                    <article class="media">
-                      <figure class="media-left">
-                        <p class="image is-48x48 m-2">
-                          <img class="is-rounded" src="<?php echo $friend['user_profile']; ?>">
-                        </p>
-                      </figure>
-                      <div class="media-content">
-                        <div class="content has-text-dark">
-                          <p style="display: flex;" class="m-2">
-                            <strong><?php echo $friend['user_name']; ?></strong>
-                            <a class="button is-warning p-1 m-1" href="AcceptFriendRequest.php/?id=<?php echo $friend['user_id']; ?>"><i class="fa fa-check"></i></a>
-                          </p>
+                  <div class="dropdown-item has-text-success has-text-weight-bold" style="width: max-content;">
+                    <div class="list-group-item list-group-action">
+                      <div class="media">
+                        <div class="chat-user-img  align-self-center mr-3">
+                          <img src="<?php echo $friend['user_profile']; ?>" ; class="rounded-circle avatar-xs" alt="">
+                        </div>
+                        <div class="media-body overflow-hidden" style="display:flex;">
+                          <h5 class="text-truncate font-size-15 mb-1 has-text-weight-bold" style="align-self: center;"><?php echo $friend['user_name']; ?></h5>
+                          <span class="ml-4"><a class="button is-warning p-1 m-1" href="AcceptFriendRequest.php/?id=<?php echo $friend['user_id']; ?>"><i class="fa fa-check"></i></a></span>
                         </div>
                       </div>
-                    </article>
+
+                    </div>
                   </div>
                 <?php
                 }
