@@ -141,52 +141,47 @@ if (isset($_POST['post'])) {
                         <a id="user-panel">Other Users</a>
                     </p>
                     <div id="Other_Users" style="display: none; height: 450px; overflow-y: scroll">
-                        <?php
-                        foreach ($otherConnection_data as $key => $friend) {
-                        ?>
-                            <a class="panel-block">
-                                <article class="media">
-                                    <figure class="media-left">
-                                        <p class="image is-48x48">
-                                            <img class="is-rounded" src="<?php echo $friend['user_profile']; ?>">
-                                        </p>
-                                    </figure>
-                                    <div class="media-content">
-                                        <div class="content">
-                                            <p>
-                                                <strong><?php echo $friend['user_name']; ?></strong>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <nav class="level m-2">
-                                        <div class="level-right">
-                                            <div class="level-item">
-                                                <a class="button is-primary is-rounded" href="sendFriendRequest.php/?id=<?php echo $friend['user_id']; ?>">connect</a>
+                        <ul class="list-unstyled chat-list chat-user-list">
+
+                            <?php
+                            foreach ($otherConnection_data as $key => $friend) {
+                            ?>
+
+                                <li>
+                                    <div class="list-group-item list-group-action">
+                                        <div class="media">
+                                            <div class="chat-user-img  align-self-center mr-3">
+                                                <img src="<?php echo $friend['user_profile']; ?>" ; class="rounded-circle avatar-xs" alt="">
+                                            </div>
+                                            <div class="media-body overflow-hidden" style="display:flex;">
+                                                <h5 class="text-truncate font-size-15 mb-1"><?php echo $friend['user_name']; ?></h5>
+                                                <span class="ml-4"><a class="button is-primary is-rounded py-0 px-2" href="sendFriendRequest.php/?id=<?php echo $friend['user_id']; ?>" style="height: auto;">connect</a></span>
                                             </div>
                                         </div>
-                                    </nav>
-                                </article>
-                            </a>
 
-                        <?php
-                        }
-                        ?>
+                                    </div>
+                                </li>
+
+                            <?php
+                            }
+                            ?>
+                        </ul>
                     </div>
                     <div id="Friends" style="height: 450px; overflow-y: scroll;">
 
-                    <ul class="list-unstyled chat-list chat-user-list">
+                        <ul class="list-unstyled chat-list chat-user-list">
                             <?php
-                        foreach ($friend_data as $key => $friend) {
+                            foreach ($friend_data as $key => $friend) {
 
-                            foreach ($user_private_data as $key => $user) {
-                                if ($user['user_id'] == $friend['user_id']) {
-                                    if ($user['user_login_status'] == 'Login') {
-                                        $status = "online";
-                                    } else {
-                                        $status = "away";
-                                    }
-                                    if ($user['count_status'] > 0) {
-                                        echo '
+                                foreach ($user_private_data as $key => $user) {
+                                    if ($user['user_id'] == $friend['user_id']) {
+                                        if ($user['user_login_status'] == 'Login') {
+                                            $status = "online";
+                                        } else {
+                                            $status = "away";
+                                        }
+                                        if ($user['count_status'] > 0) {
+                                            echo '
                                                 <li class="unread">
                                                     <a href="#" class ="list-group-item list-group-action select_user" style="cursor:pointer;" data-id=' . $user['user_id'] . ' id="' . $user['user_id'] . '"  data-username=' . $user['user_name'] . ' data-profile =' . $user['user_profile'] . ' >
                                                         <div class="media">
@@ -207,8 +202,8 @@ if (isset($_POST['post'])) {
                                                     </a>
                                                 </li>
                                                 ';
-                                    } else {
-                                        echo '
+                                        } else {
+                                            echo '
                                                 <li>
                                                     <a href="#" class ="list-group-item list-group-action select_user" style="cursor:pointer;" data-id=' . $user['user_id'] . ' id="' . $user['user_id'] . '" data-username=' . $user['user_name'] . ' data-profile =' . $user['user_profile'] . ' >
                                                         <div class="media">
@@ -225,14 +220,14 @@ if (isset($_POST['post'])) {
                                                     </a>
                                                 </li>
                                                 ';
+                                        }
                                     }
                                 }
                             }
-                        }
 
                             ?>
                         </ul>
-                        
+
                     </div>
                 </article>
 
@@ -321,7 +316,7 @@ if (isset($_POST['post'])) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </body>
 <script>
-    var media = document.querySelector('#file');
+    var media = document.querySelector(' #file');
     var image = document.querySelector('#image_content');
     media.onchange = event => {
         const [file] = media.files;
@@ -560,19 +555,19 @@ if (isset($_POST['post'])) {
             event.preventDefault();
 
             var user_id = $('#login_user_id').val();
-                var message = $('#private_chat_message').val();
-                var data = {
-                    userId: user_id,
-                    msg: message,
-                    receiver_userId: receiver_user_id,
-                    command: 'Private'
-                };
+            var message = $('#private_chat_message').val();
+            var data = {
+                userId: user_id,
+                msg: message,
+                receiver_userId: receiver_user_id,
+                command: 'Private'
+            };
 
-                $('#private_chat_message').val('');
-                conn_private.send(JSON.stringify(data));
+            $('#private_chat_message').val('');
+            conn_private.send(JSON.stringify(data));
 
             // if ($('#private_chat_form').parsley().isValid()) {
-                
+
 
             // }
         });
