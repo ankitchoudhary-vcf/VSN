@@ -64,7 +64,7 @@
           </div>
 
 
-          <a class="image mr-2" href="#" style="width: 30px; height: 40px;" title="Profile">
+          <a class="image mr-2" href="/profile.php" style="width: 30px; height: 40px;" title="Profile">
             <img class="is-rounded" src="<?php echo $user_data['user_profile']; ?>" alt="Profile">
           </a>
           <form method="post" action="logout.php">
