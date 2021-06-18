@@ -287,7 +287,8 @@ class User
     function upload_image($user_profile)
     {
         $extension = explode('.', $user_profile['name']);
-        $new_name = rand(). '.'.$extension[1];
+        $num = count($extension);
+        $new_name = rand(). '.'.$extension[$num - 1];
         $destination = 'images/' . $new_name;
         move_uploaded_file($user_profile['tmp_name'], $destination);
         return $destination;
@@ -370,6 +371,17 @@ class User
 
 		return $user_id;
 	}
+
+    function update($DOB, $Address, $number)
+    {
+
+        $query = "UPDATE chat_user_table SET user_name = '$this->user_name', user_profile = '$this->user_profile' , DOB = $DOB , Address = '$Address' , Phone_Number = '$number' WHERE user_id = $this->user_id";
+
+        $statement = $this->connect->prepare($query);
+        if($statement->execute()){
+            return true;
+        }
+    }
 }
 
 ?>

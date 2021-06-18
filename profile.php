@@ -90,7 +90,7 @@ $users_data = $user_object->get_user_all_data();
     <div class="container-fluid">
         <div class="columns is-centered notification is-mobile is-multiline">
             <div class="column box">
-                <p class="notification is-success title">Profile</p>
+                <p class="notification is-success title">Profile<a href="edit.php" class="button is-warning" style="float:right;" >Edit</a></p>
                 <div class="columns is-multiline is-mobile is-centered">
                     <div class="column is-half">
                         <figure class="image is-square">
@@ -101,6 +101,9 @@ $users_data = $user_object->get_user_all_data();
                         <p class="title">Username : <span class="title is-4"><?php echo $user_data['user_name']?></span></p>
                         <p class="title">Email : <span class="title is-4"><?php echo $user_data['user_email']?></span></p>
                         <p class="title">Created on : <span class="title is-4"><?php echo $user_data['user_created_on']?></span></p>
+                        <p class="title">Date of Birth : <span class="title is-4"><?php echo $user_data['DOB']?></span></p>
+                        <p class="title">Address : <span class="title is-4"><?php echo $user_data['Address']?></span></p>
+                        <p class="title">Phone Number : <span class="title is-4"><?php echo $user_data['Phone_Number']?></span></p>
                     </div>
                 </div>
 
