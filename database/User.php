@@ -375,7 +375,7 @@ class User
     function update($DOB, $Address, $number)
     {
 
-        $query = "UPDATE chat_user_table SET user_name = '$this->user_name', user_profile = '$this->user_profile' , DOB = $DOB , Address = '$Address' , Phone_Number = '$number' WHERE user_id = $this->user_id";
+        $query = "UPDATE chat_user_table SET user_name = '$this->user_name', user_profile = '$this->user_profile' , DOB = '$DOB' , Address = '$Address' , Phone_Number = '$number' WHERE user_id = $this->user_id";
 
         $statement = $this->connect->prepare($query);
         if($statement->execute()){

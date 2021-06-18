@@ -37,7 +37,8 @@ if (isset($_POST['edit'])) {
         $_SESSION['user_data'][$user_id]['profile'] = $user_profile;
         $user_object->setUserProfile($user_profile);
     }
-    if ($user_object->update($_POST['DOB'], $_POST['address'], $_POST['number'])) {
+    $date = date('Y-m-d', strtotime($_POST['DOB']));
+    if ($user_object->update($date, $_POST['address'], $_POST['number'])) {
         $message = 'Profile Details Updated';
     }
 }
@@ -138,7 +139,7 @@ if (isset($_POST['edit'])) {
                             <p class="title">Username : <input class="input is-success is-medium" type="text" name="username" value="<?php echo $user_data['user_name'] ?>" required></p>
                             <p class="title">Email : <input class="input is-success is-medium" type="text" value="<?php echo $user_data['user_email'] ?>" readonly></p>
                             <p class="title">Created on : <input class="input is-success is-medium" type="text" value="<?php echo $user_data['user_created_on'] ?>" readonly></p>
-                            <p class="title">Date of Birth : <input class="input is-success is-medium" type="text" placeholder="YYYY-MM-DD" required title="Enter a date in this format YYYY-MM-DD" name="DOB" value="<?php echo $user_data['DOB'] ?>" required></p>
+                            <p class="title">Date of Birth : <input class="input is-success is-medium" type="date"  required  name="DOB" value="<?php echo date("Y-m-d", strtotime($user_data['DOB'])); ?>" required></p>
                             <p class="title">Address : <input class="input is-success is-medium" type="text" name="address" value="<?php echo $user_data['Address'] ?>" required></p>
                             <p class="title">Phone Number : <input class="input is-success is-medium" type="text" name="number" value="<?php echo $user_data['Phone_Number'] ?>" required></p>
                         </div>
@@ -153,7 +154,13 @@ if (isset($_POST['edit'])) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </body>
-
+<script>
+    $(document).ready(function() {
+        $('.delete').click(function() {
+            $('.message').css('display', 'none');
+        })
+    })
+</script>
 <script>
     var profile = document.getElementById('profile');
     var img = document.getElementById('profile_image')
