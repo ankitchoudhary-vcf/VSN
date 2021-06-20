@@ -9,7 +9,7 @@ class Comment
     private $connect;
 
     function __construct(){ 
-        require_once('/Database_connection.php');
+        require_once('Database_connection.php');
         $database_object = new Database_connection;
         $this->connect = $database_object->connect();
     }
@@ -32,9 +32,12 @@ class Comment
         return $data;
     }
     function saveComment(){
-        $query = "INSERT INTO comment (post_id, comment, user_id) VALUES($this->post_id, $this->comment, $this->user_id)";
+        $query = "INSERT INTO comment (post_id, comments, user_id) VALUES($this->post_id, '$this->comment', $this->user_id)";
         $statement = $this->connect->prepare($query);
-        $statement->execute();
+        if($statement->execute())
+        {
+            return true;
+        }
     }
 
 }

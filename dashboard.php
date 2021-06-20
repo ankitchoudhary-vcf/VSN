@@ -8,6 +8,8 @@ if (!(isset($_SESSION['user_data']))) {
 
 $error = '';
 
+
+
 require('database/User.php');
 
 $user_object = new User;
@@ -44,6 +46,9 @@ $friend_data = $friend_object->getALLFriend($user_id);
 $otherConnection_data = $friend_object->getOtherConnection($user_id);
 $friend_request_data = $friend_object->getFriendRequest($user_id);
 
+require('./database/Comment.php');
+$comment_object = new Comment;
+
 
 if (isset($_POST['post'])) {
     $post_object->setUser_id($user_id);
@@ -67,6 +72,21 @@ if (isset($_POST['post'])) {
         $post_object->save_post();
         header("Refresh:0");
     }
+}
+
+if (isset($_POST['sendcomment'])) {
+
+    echo $_POST['post_id'];
+    echo $_POST['comment'];
+
+    $comment_object->setPostId($_POST['post_id']);
+    $comment_object->setUserId($user_id);
+    $comment_object->setComment($_POST['comment']);
+
+    $comment_object->saveComment();
+    header("Refresh:0");
+
+
 }
 
 ?>
@@ -303,6 +323,51 @@ if (isset($_POST['post'])) {
 
                                 ?>
                             </div>
+                            <footer>
+                                <form method="post" enctype="multipart/form-data" style="display:inline-flex;">
+                                    <input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" >
+                                    <input type="text" name="comment" class="input is-rounded is-primary" placeholder="Enter comment...." style="align-self: center;">
+                                    <button type="submit" class="button is-primary is-rounded m-2" name="sendcomment"><i class="fas fa-paper-plane" style="transform: rotate(45deg);"></i></button>
+                                </form>
+                                <div class="notification content is-light">
+                                    <ul class='list-unstyled mb-0'>
+
+                                        <?php
+                                        $comment_object->setPostId($post['post_id']);
+                                        $comment_data = $comment_object->getAllCommentsBypost_id();
+
+
+                                        foreach ($comment_data as $key => $comment) {
+                                            $name = $user_object->get_user_name_by_id($post['user_id']);
+                                            $profile = $user_object->get_user_profile_by_id($post['user_id']);
+                                        ?>
+
+                                            <li class='right'>
+                                                <div class='conversation-list'>
+                                                    <div class='chat-avatar'>
+                                                        <img src="<?php echo $profile['user_profile']; ?>" alt=''>
+                                                    </div>
+                                                    <div class='user-chat-content'>
+                                                        <div class='ctext-wrap'>
+                                                            <div class='ctext-wrap-content'>
+                                                                <p class='mb-0'> <?php echo $comment['comments']; ?></p>
+                                                                <p class='chat-time mb-0'>
+                                                                    <i class='ri-time-line align-middle'></i>
+                                                                    <span class='align-middle'> <?php echo $comment['created_on'] ?> </span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class='conversation-name'><?php echo $name['user_name']; ?></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+
+                                        <?php
+                                        }
+                                        ?>
+                                    </ul>
+                                </div>
+                            </footer>
                         </div>
                     <?php
                     }
