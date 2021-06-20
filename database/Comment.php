@@ -25,7 +25,7 @@ class Comment
     }
 
     function getAllCommentsBypost_id(){
-        $query = "SELECT * FROM comment WHERE post_id = $this->post_id";
+        $query = "SELECT * FROM comment WHERE post_id = $this->post_id ORDER BY id DESC";
         $statement = $this->connect->prepare($query);
         $statement->execute();
         $data  = $statement->fetchAll(PDO::FETCH_ASSOC);
