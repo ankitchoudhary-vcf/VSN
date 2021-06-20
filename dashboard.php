@@ -76,17 +76,12 @@ if (isset($_POST['post'])) {
 
 if (isset($_POST['sendcomment'])) {
 
-    echo $_POST['post_id'];
-    echo $_POST['comment'];
-
     $comment_object->setPostId($_POST['post_id']);
     $comment_object->setUserId($user_id);
     $comment_object->setComment($_POST['comment']);
 
     $comment_object->saveComment();
     header("Refresh:0");
-
-
 }
 
 ?>
@@ -324,13 +319,13 @@ if (isset($_POST['sendcomment'])) {
                                 ?>
                             </div>
                             <footer>
-                                <form method="post" enctype="multipart/form-data" style="display:inline-flex;">
-                                    <input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>" >
+                                <form method="post" enctype="multipart/form-data" style="display:inline-flex; width: -webkit-fill-available;">
+                                    <input type="hidden" name="post_id" value="<?php echo $post['post_id']; ?>">
                                     <input type="text" name="comment" class="input is-rounded is-primary" placeholder="Enter comment...." style="align-self: center;">
                                     <button type="submit" class="button is-primary is-rounded m-2" name="sendcomment"><i class="fas fa-paper-plane" style="transform: rotate(45deg);"></i></button>
                                 </form>
-                                <div class="notification content is-light">
-                                    <ul class='list-unstyled mb-0'>
+                                <div class="notification content is-light p-0">
+                                    <ul class='py-3 px-2' style="list-style: none; max-height:350px; overflow-y: scroll;">
 
                                         <?php
                                         $comment_object->setPostId($post['post_id']);
@@ -342,24 +337,24 @@ if (isset($_POST['sendcomment'])) {
                                             $profile = $user_object->get_user_profile_by_id($post['user_id']);
                                         ?>
 
-                                            <li class='right'>
-                                                <div class='conversation-list'>
-                                                    <div class='chat-avatar'>
-                                                        <img src="<?php echo $profile['user_profile']; ?>" alt=''>
-                                                    </div>
-                                                    <div class='user-chat-content'>
-                                                        <div class='ctext-wrap'>
-                                                            <div class='ctext-wrap-content'>
-                                                                <p class='mb-0'> <?php echo $comment['comments']; ?></p>
-                                                                <p class='chat-time mb-0'>
-                                                                    <i class='ri-time-line align-middle'></i>
-                                                                    <span class='align-middle'> <?php echo $comment['created_on'] ?> </span>
-                                                                </p>
-                                                            </div>
+                                            <li class="notification is-success is-light box">
+
+                                                <article class="media">
+                                                    <figure class="media-left">
+                                                        <p>
+                                                            <img class="rounded-circle avatar-xs" src="<?php echo $profile['user_profile']; ?>">
+                                                        </p>
+                                                    </figure>
+                                                    <div class="media-content">
+                                                        <div class="content">
+                                                            <p>
+                                                                <strong><?php echo $name['user_name']; ?></strong> <small>@<?php echo $name['user_name']; ?></small> <small><?php echo $comment['created_on'] ?></small>
+                                                                <br>
+                                                                <?php echo $comment['comments']; ?>
+                                                            </p>
                                                         </div>
-                                                        <div class='conversation-name'><?php echo $name['user_name']; ?></div>
                                                     </div>
-                                                </div>
+                                                </article>
                                             </li>
 
                                         <?php
