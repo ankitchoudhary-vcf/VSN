@@ -23,6 +23,15 @@ class Comment
     function setComment($comment){
         $this->comment = $comment;
     }
+    function getPostId(){
+        return $this->post_id;
+    }
+    function getComment(){
+        return $this->comment;
+    }
+    function getuserId(){
+        return $this->user_id;
+    }
 
     function getAllCommentsBypost_id(){
         $query = "SELECT * FROM comment WHERE post_id = $this->post_id ORDER BY id DESC";
